@@ -50,10 +50,10 @@ public class ConvertOneAFMAFiletoAvro {
 				if (beforeStart) {
 					if (line.contains("\"items\"")) {
 						beforeStart = false;
-						if (!AvroSchemaFromAFMASchemaStringNoThrows.makeSchema(schemaStringBuilder.toString())) return false;
-						datumReader = new GenericDatumReader<>(AvroSchemaFromAFMASchemaStringNoThrows.schema);
-						decoder = DecoderFactory.get().jsonDecoder(AvroSchemaFromAFMASchemaStringNoThrows.schema, "");
-						datumWriter.create(AvroSchemaFromAFMASchemaStringNoThrows.schema, avroFile);
+						if (!AvroSchemaFromAFMASchemaString.makeSchema(schemaStringBuilder.toString())) return false;
+						datumReader = new GenericDatumReader<>(AvroSchemaFromAFMASchemaString.schema);
+						decoder = DecoderFactory.get().jsonDecoder(AvroSchemaFromAFMASchemaString.schema, "");
+						datumWriter.create(AvroSchemaFromAFMASchemaString.schema, avroFile);
 
 					} else {
 						schemaStringBuilder.append(line);
@@ -82,13 +82,13 @@ public class ConvertOneAFMAFiletoAvro {
 						continue;
 					}
 					// Convert date types to epoch time (seconds since 1 Jan 1970
-					if (AvroSchemaFromAFMASchemaStringNoThrows.finalTypeMap.get(beforeColon).logicalType.equals("\"timestamp-millis\"")) {
+					if (AvroSchemaFromAFMASchemaString.finalTypeMap.get(beforeColon).logicalType.equals("\"timestamp-millis\"")) {
 						afterColon = afterColon.replaceAll("\"", "");
 						LocalDateTime ldt = LocalDateTime.parse(afterColon, dtf);
 						long timestamp = ldt.toEpochSecond(zoneOffset);
 						afterColon = String.valueOf(timestamp);
 					}
-					sb.append("{" + AvroSchemaFromAFMASchemaStringNoThrows.finalTypeMap.get(beforeColon).physicalType + ":" + afterColon
+					sb.append("{" + AvroSchemaFromAFMASchemaString.finalTypeMap.get(beforeColon).physicalType + ":" + afterColon
 							+ "},");
 				}
 				if (sb.charAt(sb.length() - 1) == ',')
