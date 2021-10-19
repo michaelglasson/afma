@@ -79,75 +79,76 @@ public class OverallConversionRun extends Thread {
 
 		String avroExtension = ".avro";
 
-		BlobServiceClient blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString)
-				.buildClient();
-
-		BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(blobContainer);
-		ListBlobsOptions options = new ListBlobsOptions();
-		options.setPrefix(blobPrefix);
-
-		Set<String> inputBlobs = new LinkedHashSet<>();
-
 		try {
+			BlobServiceClient blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString)
+					.buildClient();
+
+			BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(blobContainer);
+			ListBlobsOptions options = new ListBlobsOptions();
+			options.setPrefix(blobPrefix);
+
+			Set<String> inputBlobs = new LinkedHashSet<>();
 
 			for (BlobItem blobItem : containerClient.listBlobs(options, null)) {
 				if (blobItem.getName().endsWith(".json-formatted")) {
 					inputBlobs.add(blobItem.getName());
 				}
 			}
+
+			timerStart("overall run");
+			logger.info("Total number of files to process: " + inputBlobs.size());
+			MonitorRunServlet.addUpdate("Total number of files to process: " + inputBlobs.size());
+
+			Integer goodFileCount = 0;
+			Integer badFileCount = 0;
+
+			for (String itemToProcess : inputBlobs) {
+				if (CancelRunServlet.cancelIsPending()) {
+					logger.info("Run cancelled by user.");
+					MonitorRunServlet.addUpdate("Run cancelled by user at "
+							+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+					CancelRunServlet.resetPendingCancel();
+					StartRunServlet.runIsInProgress = false;
+					return;
+				}
+
+				BlobClient blobInputClient = containerClient.getBlobClient(itemToProcess);
+				InputStream blobIS = blobInputClient.openInputStream();
+
+				BlobClient blobOutputClient = containerClient.getBlobClient(itemToProcess + avroExtension);
+				BlobOutputStream blobOS = blobOutputClient.getBlockBlobClient().getBlobOutputStream(true);
+
+				// Now we invoke the conversion
+				MonitorRunServlet.addUpdate("Processing file: " + itemToProcess + " starting at "
+						+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+
+				logger.info("Processing file: " + itemToProcess + " starting at "
+						+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+				// timerStart("Converting AFMA json file to Avro");
+				if (ConvertOneAFMAFiletoAvro.run(blobIS, blobOS))
+					goodFileCount++;
+				else
+					badFileCount++;
+				// timerStop("Converting AFMA json file to Avro");
+			}
+
+			timerStop("overall run");
+			MonitorRunServlet.addUpdate("The number of files successfully processed is: " + goodFileCount.toString());
+			MonitorRunServlet.addUpdate("The number of files UNsuccessfully processed is: " + badFileCount.toString());
+			logger.info(
+					"Run completed at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+			MonitorRunServlet.addUpdate(
+					"Run completed at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+			StartRunServlet.runIsInProgress = false;
 		} catch (Exception e) {
 			logger.error("ERROR: blobs not found: " + e.getMessage());
-			MonitorRunServlet.addUpdate("ERROR: blobs not found: " + e.getMessage());
+			MonitorRunServlet
+					.addUpdate("ERROR: blobs not found (check connection string and container): " + e.getMessage());
 			MonitorRunServlet.addUpdate("Run ended with error at "
 					+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 			StartRunServlet.runIsInProgress = false;
 			return;
 		}
-
-		timerStart("overall run");
-		logger.info("Total number of files to process: " + inputBlobs.size());
-		MonitorRunServlet.addUpdate("Total number of files to process: " + inputBlobs.size());
-
-		Integer goodFileCount = 0;
-		Integer badFileCount = 0;
-
-		for (String itemToProcess : inputBlobs) {
-			if (CancelRunServlet.cancelIsPending()) {
-				logger.info("Run cancelled by user.");
-				MonitorRunServlet.addUpdate("Run cancelled by user at "
-						+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-				CancelRunServlet.resetPendingCancel();
-				StartRunServlet.runIsInProgress = false;
-				return;
-			}
-
-			BlobClient blobInputClient = containerClient.getBlobClient(itemToProcess);
-			InputStream blobIS = blobInputClient.openInputStream();
-
-			BlobClient blobOutputClient = containerClient.getBlobClient(itemToProcess + avroExtension);
-			BlobOutputStream blobOS = blobOutputClient.getBlockBlobClient().getBlobOutputStream(true);
-
-			// Now we invoke the conversion
-			MonitorRunServlet.addUpdate("Processing file: " + itemToProcess + " starting at "
-					+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-
-			logger.info("Processing file: " + itemToProcess + " starting at "
-					+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-			// timerStart("Converting AFMA json file to Avro");
-			if (ConvertOneAFMAFiletoAvro.run(blobIS, blobOS))
-				goodFileCount++;
-			else
-				badFileCount++;
-			// timerStop("Converting AFMA json file to Avro");
-		}
-
-		timerStop("overall run");
-		MonitorRunServlet.addUpdate("The number of files successfully processed is: " + goodFileCount.toString());
-		MonitorRunServlet.addUpdate("The number of files UNsuccessfully processed is: " + badFileCount.toString());
-		logger.info("Run completed at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-		MonitorRunServlet.addUpdate(
-				"Run completed at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-		StartRunServlet.runIsInProgress = false;
 	}
 
 	public void timerStart(String data) {
