@@ -2,9 +2,6 @@ package afmafile;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,18 +38,7 @@ public class StartRunServlet extends HttpServlet {
 
 				runIsInProgress = true;
 				MonitorRunServlet.clearUpdates();
-/*
-				logger.info("Starting conversion run at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-				MonitorRunServlet.addUpdate("Starting conversion run at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-				
-				out.println("<h2>Now commencing processing of " + blobContainer + ".</h2>");
-				out.println("<p/>");
 
-				out.println("<form action=\"monitorrun\" method=\"get\">"
-						+ "<input type=\"submit\" value=\"Click here to monitor run.\">" + "</form>");
-				out.println("</body></html>");
-				out.close();
-*/
 				// The conversion runs in its own thread, allowing us to go to the monitoring page while conversion runs
 				OverallConversionRun a2a = new OverallConversionRun(connectionString, blobPrefix, blobContainer);
 				a2a.start();
