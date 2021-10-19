@@ -3,6 +3,7 @@ package afmafile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,13 +35,10 @@ public class StartRunServlet extends HttpServlet {
 			String connectionString = request.getParameter("connectionString");
 			String blobPrefix = request.getParameter("blobPrefix");
 			String blobContainer = request.getParameter("blobContainer");
-			String accessKey = request.getParameter("accessKey");
 			if (connectionString != null && connectionString.length() > 0 && blobPrefix != null
-					&& blobPrefix.length() > 0 && blobContainer != null && blobContainer.length() > 0
-					&& accessKey != null && accessKey.length() > 0
-					&& accessKey.contentEquals("HeNT3VHarWyVEF3h9NR1LsSmF0IOJVYJ9GmaCbkgdEAve3SaPr")) {
+					&& blobPrefix.length() > 0 && blobContainer != null && blobContainer.length() > 0) {
 
-				logger.info("Starting conversion run at " + LocalTime.now().toString());
+				logger.info("Starting conversion run at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 				runIsInProgress = true;
 				MonitorRunServlet.clearUpdates();
 				MonitorRunServlet.addUpdate("Starting conversion run");

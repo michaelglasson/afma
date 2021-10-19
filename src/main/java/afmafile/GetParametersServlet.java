@@ -29,7 +29,7 @@ public class GetParametersServlet extends HttpServlet {
 				+ "<input type=\"text\" name=\"connectionString\" size=\"80\" placeholder=\"connectionString\">"
 				+ "<input type=\"text\" name=\"blobPrefix\" size=\"80\" placeholder=\"blobPrefix\">"
 				+ "<input type=\"text\" name=\"blobContainer\" size=\"80\" placeholder=\"blobContainer\">"
-				+ "<input type=\"text\" name=\"accessKey\" size=\"80\" placeholder=\"accessKey\">" + "<p></p>"
+				+ "<p></p>"
 				+ "<input type=\"submit\" value=\"Submit\">" + "</form>");
 		out.println("</body></html>");
 		out.close();

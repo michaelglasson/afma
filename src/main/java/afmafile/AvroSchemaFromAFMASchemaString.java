@@ -52,7 +52,7 @@ public class AvroSchemaFromAFMASchemaString {
 			writeSchema();
 			return true;
 		} catch (Exception e) {
-			MonitorRunServlet.addUpdate("Something wrong with input file schema" + e.getMessage());
+			MonitorRunServlet.addUpdate("ERROR: something wrong with input file schema " + e.getMessage());
 			return false;
 		}
 	}
