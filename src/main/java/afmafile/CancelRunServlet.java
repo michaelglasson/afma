@@ -33,6 +33,8 @@ public class CancelRunServlet extends HttpServlet {
 		out.println("<h3><a href=\"monitorrun\">Return to monitoring page</a></h3>");
 		out.println("</body></html>");
 		out.close();
+		
+		MonitorRunServlet.addUpdate("Cancellation of run requested by user. Run will finish when current file is processed.");
 	}
 
 	public static Boolean cancelIsPending() {

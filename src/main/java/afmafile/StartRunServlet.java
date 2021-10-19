@@ -41,6 +41,7 @@ public class StartRunServlet extends HttpServlet {
 
 				runIsInProgress = true;
 				MonitorRunServlet.clearUpdates();
+/*
 				logger.info("Starting conversion run at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 				MonitorRunServlet.addUpdate("Starting conversion run at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 				
@@ -51,12 +52,11 @@ public class StartRunServlet extends HttpServlet {
 						+ "<input type=\"submit\" value=\"Click here to monitor run.\">" + "</form>");
 				out.println("</body></html>");
 				out.close();
-
+*/
+				// The conversion runs in its own thread, allowing us to go to the monitoring page while conversion runs
 				OverallConversionRun a2a = new OverallConversionRun(connectionString, blobPrefix, blobContainer);
 				a2a.start();
-				
-				
-				
+				response.sendRedirect(request.getContextPath() + "/monitorrun");
 				
 			} else {
 				out.println("<h2>All inputs must be provided. Start again and enter them all.</h2>");
