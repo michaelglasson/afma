@@ -3,6 +3,7 @@ package afmafile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
@@ -40,8 +41,8 @@ public class StartRunServlet extends HttpServlet {
 
 				runIsInProgress = true;
 				MonitorRunServlet.clearUpdates();
-				logger.info("Starting conversion run at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
-				MonitorRunServlet.addUpdate("Starting conversion run at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+				logger.info("Starting conversion run at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+				MonitorRunServlet.addUpdate("Starting conversion run at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 				
 				out.println("<h2>Now commencing processing of " + blobContainer + ".</h2>");
 				out.println("<p/>");

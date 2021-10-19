@@ -3,6 +3,7 @@ package afmafile;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -106,7 +107,7 @@ public class OverallConversionRun extends Thread {
 				if (CancelRunServlet.cancelIsPending()) {
 					logger.info("Run cancelled by user.");
 					MonitorRunServlet.addUpdate("Run cancelled by user at "
-							+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+							+ LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 					CancelRunServlet.resetPendingCancel();
 					StartRunServlet.runIsInProgress = false;
 					return;
@@ -120,10 +121,10 @@ public class OverallConversionRun extends Thread {
 
 				// Now we invoke the conversion
 				MonitorRunServlet.addUpdate("Processing file: " + itemToProcess + " starting at "
-						+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+						+ LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 
 				logger.info("Processing file: " + itemToProcess + " starting at "
-						+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+						+ LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 				// timerStart("Converting AFMA json file to Avro");
 				if (ConvertOneAFMAFiletoAvro.run(blobIS, blobOS))
 					goodFileCount++;
@@ -136,28 +137,28 @@ public class OverallConversionRun extends Thread {
 			MonitorRunServlet.addUpdate("The number of files successfully processed is: " + goodFileCount.toString());
 			MonitorRunServlet.addUpdate("The number of files UNsuccessfully processed is: " + badFileCount.toString());
 			logger.info(
-					"Run completed at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+					"Run completed at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 			MonitorRunServlet.addUpdate(
-					"Run completed at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+					"Run completed at " + LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 			StartRunServlet.runIsInProgress = false;
 		} catch (Exception e) {
 			logger.error("ERROR: blobs not found: " + e.getMessage());
 			MonitorRunServlet
 					.addUpdate("ERROR: blobs not found (check connection string and container): " + e.getMessage());
 			MonitorRunServlet.addUpdate("Run ended with error at "
-					+ LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+					+ LocalTime.now(ZoneId.of("Australia/Canberra")).format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 			StartRunServlet.runIsInProgress = false;
 			return;
 		}
 	}
 
 	public void timerStart(String data) {
-		times.put(data, LocalTime.now());
+		times.put(data, LocalTime.now(ZoneId.of("Australia/Canberra")));
 		logger.info(data + " started at " + times.get(data.toString()));
 	}
 
 	public void timerStop(String data) {
-		Duration duration = Duration.between(times.get(data), LocalTime.now());
+		Duration duration = Duration.between(times.get(data), LocalTime.now(ZoneId.of("Australia/Canberra")));
 		String minutes = String.valueOf(duration.toMinutes());
 		String seconds = String.valueOf(duration.getSeconds() % 60);
 		logger.info("Elapsed time for " + data + " was: " + minutes + " minutes and " + seconds + " seconds");
