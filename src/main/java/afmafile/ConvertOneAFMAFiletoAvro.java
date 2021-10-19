@@ -106,7 +106,7 @@ public class ConvertOneAFMAFiletoAvro {
 			datumWriter.close();
 			return true;
 		} catch (Exception e) {
-			MonitorRunServlet.addUpdate("ERROR: there is something wrong with the input file: " + e.getMessage());
+			MonitorRunServlet.addUpdate("ERROR: something wrong with the input file: " + e.getMessage());
 			return false;
 		}
 	}

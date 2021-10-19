@@ -38,10 +38,10 @@ public class StartRunServlet extends HttpServlet {
 			if (connectionString != null && connectionString.length() > 0 && blobPrefix != null
 					&& blobPrefix.length() > 0 && blobContainer != null && blobContainer.length() > 0) {
 
-				logger.info("Starting conversion run at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 				runIsInProgress = true;
 				MonitorRunServlet.clearUpdates();
-				MonitorRunServlet.addUpdate("Starting conversion run");
+				logger.info("Starting conversion run at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
+				MonitorRunServlet.addUpdate("Starting conversion run at " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).toString());
 				
 				out.println("<h2>Now commencing processing of " + blobContainer + ".</h2>");
 				out.println("<p/>");
@@ -53,6 +53,10 @@ public class StartRunServlet extends HttpServlet {
 
 				OverallConversionRun a2a = new OverallConversionRun(connectionString, blobPrefix, blobContainer);
 				a2a.start();
+				
+				
+				
+				
 			} else {
 				out.println("<h2>All inputs must be provided. Start again and enter them all.</h2>");
 				out.println("</body></html>");
