@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>awe.gov.au</groupId>
-	<artifactId>ConvertAFMToAvro</artifactId>
+	<artifactId>SpecialConverter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
@@ -71,7 +71,7 @@
           <schemaVersion>v2</schemaVersion>
           <subscriptionId>a700bc87-b1e6-4276-ae66-d95a948852f6</subscriptionId>
           <resourceGroup>ConverterGroup</resourceGroup>
-          <appName>ConvertAFMToAvro</appName>
+          <appName>SpecialConverter</appName>
           <pricingTier>B1</pricingTier>
           <region>australiaeast</region>
           <appServicePlanName>ConverterAppServicePlan</appServicePlanName>

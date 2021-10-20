@@ -1,4 +1,4 @@
-package ConvertAFMAToAvro;
+package specialConverter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;

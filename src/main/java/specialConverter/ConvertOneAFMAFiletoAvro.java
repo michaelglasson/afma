@@ -1,4 +1,4 @@
-package ConvertAFMAToAvro;
+package specialConverter;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
