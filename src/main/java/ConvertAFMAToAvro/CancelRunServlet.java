@@ -1,4 +1,4 @@
-package afmafile;
+package ConvertAFMAToAvro;
 
 import java.io.IOException;
 import java.io.PrintWriter;
