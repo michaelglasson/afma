@@ -91,18 +91,23 @@ public class AvroSchemaFromAFMASchemaString {
 	 * This allows us to use either the AFMA schema type or the AFMA schema field
 	 * name to determine the outgoing Avro type. For a start, we will just convert
 	 * record_no to an int, but in future, we might try different approaches with
-	 * field names that contain thing likek 'number_of'.
+	 * field names that contain thing like 'number_of'.
 	 */
 	public static void writeAvroType(String name, String AFMAType) throws Exception {
 		Map<String, fieldType> typeMap = new HashMap<>();
 		typeMap.put("CHAR", new fieldType("string", ""));
 		typeMap.put("VARCHAR2", new fieldType("string", ""));
 		typeMap.put("NUMBER", new fieldType("double", ""));
-		typeMap.put("DATE", new fieldType("long", "timestamp-millis"));
+		//typeMap.put("DATE", new fieldType("long", "timestamp-millis"));
 
 		Map<String, fieldType> nameMap = new HashMap<>();
 
 		nameMap.put("record_no", new fieldType("int", ""));
+		
+		// caab_code probably works better as a string
+		// nameMap.put("caab_code", new fieldType("int", ""));
+		
+		
 		String physicalType = "";
 		String logicalType = "";
 
@@ -116,7 +121,9 @@ public class AvroSchemaFromAFMASchemaString {
 
 		else
 			physicalType = "string";
-
+/*
+		Azure Data Factory / Synapse does not appear to recognise this format. To make things 
+		easier, we will just ignore it and keep dates as strings.
 		if (AFMAType.equals("DATE")) {
 
 			jGenerator.writeStartObject();
@@ -125,8 +132,8 @@ public class AvroSchemaFromAFMASchemaString {
 			jGenerator.writeEndObject();
 
 		} else {
-			jGenerator.writeString(physicalType);
-		}
+*/			jGenerator.writeString(physicalType);
+	//	}
 		finalTypeMap.put("\"" + name + "\"", new fieldType("\"" + physicalType + "\"", "\"" + logicalType + "\""));
 	}
 

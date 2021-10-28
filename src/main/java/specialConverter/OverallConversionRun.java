@@ -116,7 +116,7 @@ public class OverallConversionRun extends Thread {
 				BlobClient blobInputClient = containerClient.getBlobClient(itemToProcess);
 				InputStream blobIS = blobInputClient.openInputStream();
 
-				BlobClient blobOutputClient = containerClient.getBlobClient(itemToProcess + avroExtension);
+				BlobClient blobOutputClient = containerClient.getBlobClient(itemToProcess.replace("_DATA_TABLE", "").replace(".json-formatted", "") + avroExtension);
 				BlobOutputStream blobOS = blobOutputClient.getBlockBlobClient().getBlobOutputStream(true);
 
 				// Now we invoke the conversion

@@ -30,18 +30,24 @@ public class StartRunServlet extends HttpServlet {
 			String connectionString = request.getParameter("connectionString");
 			String blobPrefix = request.getParameter("blobPrefix");
 			String blobContainer = request.getParameter("blobContainer");
+			String accessKey = request.getParameter("accessKey");
+			
 			if (connectionString != null && connectionString.length() > 0 && blobPrefix != null
-					&& blobPrefix.length() > 0 && blobContainer != null && blobContainer.length() > 0) {
+					&& blobPrefix.length() > 0 && blobContainer != null && blobContainer.length() > 0
+					&& accessKey != null && accessKey.length() > 0
+					&& System.getenv("accessKey") != null
+					&& accessKey.contentEquals(System.getenv("accessKey"))) {
 
 				runIsInProgress = true; // Prevents restarting run during run
 				CancelRunServlet.resetPendingCancel();
 				MonitorRunServlet.clearUpdates(); // Updates are left in place until new run starts
 
-				// The conversion runs in its own thread, allowing us to go to the monitoring page while conversion runs
+				// The conversion runs in its own thread, allowing us to go to the monitoring
+				// page while conversion runs
 				OverallConversionRun a2a = new OverallConversionRun(connectionString, blobPrefix, blobContainer);
 				a2a.start();
 				response.sendRedirect(request.getContextPath() + "/monitorrun");
-				
+
 			} else {
 				PrintWriter out = response.getWriter();
 				out.println("<html><head><title>AFMA File Processing</title></head><body>");

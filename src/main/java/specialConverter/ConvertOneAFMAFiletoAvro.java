@@ -81,7 +81,7 @@ public class ConvertOneAFMAFiletoAvro {
 						sb.append("null,");
 						continue;
 					}
-					// Convert date types to epoch time (seconds since 1 Jan 1970
+					// Convert date types to epoch time (seconds before or since 1 Jan 1970
 					if (AvroSchemaFromAFMASchemaString.finalTypeMap.get(beforeColon).logicalType.equals("\"timestamp-millis\"")) {
 						afterColon = afterColon.replaceAll("\"", "");
 						LocalDateTime ldt = LocalDateTime.parse(afterColon, dtf);

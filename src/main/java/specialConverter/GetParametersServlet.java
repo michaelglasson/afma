@@ -27,8 +27,9 @@ public class GetParametersServlet extends HttpServlet {
 		// out.println("<form action=\"startrun\" method=\"post\" autocomplete=\"off\">"
 		out.println("<form action=\"startrun\" method=\"post\">"
 				+ "<input type=\"text\" name=\"connectionString\" size=\"80\" placeholder=\"connectionString\">"
-				+ "<input type=\"text\" name=\"blobPrefix\" size=\"80\" placeholder=\"blobPrefix\">"
-				+ "<input type=\"text\" name=\"blobContainer\" size=\"80\" placeholder=\"blobContainer\">"
+				+ "<input type=\"text\" name=\"blobPrefix\" size=\"80\" placeholder=\"Blob Prefix\">"
+				+ "<input type=\"text\" name=\"blobContainer\" size=\"80\" placeholder=\"Blob Container\">"
+				+ "<input type=\"text\" name=\"accessKey\" size=\"80\" placeholder=\"Access Key\">"
 				+ "<p></p>"
 				+ "<input type=\"submit\" value=\"Submit\">" + "</form>");
 		out.println("</body></html>");
